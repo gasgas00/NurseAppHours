@@ -1,0 +1,991 @@
+<title>Eureka Turni</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* ---------------------------------------------------------------
+   Tokens — light is the base set; dark redefines only the values.
+   --------------------------------------------------------------- */
+:root {
+  --paper:      #e9edee;
+  --surface:    #ffffff;
+  --surface-2:  #f3f6f6;
+  --sunken:     #dfe5e6;
+  --ink:        #0f1a1d;
+  --ink-2:      #445459;
+  --ink-3:      #6d8087;
+  --line:       #ccd7d9;
+  --line-soft:  #e2eaeb;
+  --accent:     #0c6862;
+  --accent-2:   #0a534e;
+  --accent-tint:#dcefed;
+  --red-day:    #a33124;
+
+  --good:       #146c46;
+  --good-tint:  #dcefe4;
+  --warn:       #8a5a00;
+  --warn-tint:  #f6ebd4;
+  --flat:       #4f6167;
+  --flat-tint:  #e6ecee;
+
+  /* shift hues — same identities as the original app, re-stepped */
+  --sh-M:   #1f6fd0;
+  --sh-P:   #c2681a;
+  --sh-N:   #6244c0;
+  --sh-MP:  #9b3fa8;
+  --sh-PN:  #c43c6e;
+  --sh-R:   #17864c;
+  --sh-S:   #c0563f;
+  --sh-F:   #9a7400;
+  --sh-REC: #5f6b78;
+  --sh-MAL: #c0392b;
+  --sh-none:#93a3a8;
+
+  --tint-amt: 13%;
+  --ink-partner: #0b1315;
+  --ink-amt: 74%;
+
+  --on-accent:  #ffffff;
+  --shadow: 0 1px 2px rgba(15,26,29,.06), 0 8px 24px -16px rgba(15,26,29,.28);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper:      #0d1417;
+    --surface:    #151e21;
+    --surface-2:  #1b262a;
+    --sunken:     #101a1d;
+    --ink:        #e8f0f1;
+    --ink-2:      #a8bcc1;
+    --ink-3:      #7d9298;
+    --line:       #2b3a3f;
+    --line-soft:  #223035;
+    --accent:     #4cc2b4;
+    --accent-2:   #6fd6c9;
+    --accent-tint:#123536;
+    --red-day:    #e0796a;
+
+    --good:       #5cbb86;
+    --good-tint:  #143026;
+    --warn:       #d9a63c;
+    --warn-tint:  #33280f;
+    --flat:       #9aacb2;
+    --flat-tint:  #1e2a2e;
+
+    --sh-M:   #6ba6f0;
+    --sh-P:   #e3963c;
+    --sh-N:   #a492ee;
+    --sh-MP:  #d183dc;
+    --sh-PN:  #ee7fa6;
+    --sh-R:   #5cbb86;
+    --sh-S:   #e58c74;
+    --sh-F:   #d0a62a;
+    --sh-REC: #9aa6b4;
+    --sh-MAL: #ee8074;
+    --sh-none:#5a6c72;
+
+    --tint-amt: 20%;
+    --ink-partner: #ffffff;
+    --ink-amt: 82%;
+
+    --on-accent:  #08201f;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 28px -18px rgba(0,0,0,.9);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper:      #0d1417;
+  --surface:    #151e21;
+  --surface-2:  #1b262a;
+  --sunken:     #101a1d;
+  --ink:        #e8f0f1;
+  --ink-2:      #a8bcc1;
+  --ink-3:      #7d9298;
+  --line:       #2b3a3f;
+  --line-soft:  #223035;
+  --accent:     #4cc2b4;
+  --accent-2:   #6fd6c9;
+  --accent-tint:#123536;
+  --red-day:    #e0796a;
+
+  --good:       #5cbb86;
+  --good-tint:  #143026;
+  --warn:       #d9a63c;
+  --warn-tint:  #33280f;
+  --flat:       #9aacb2;
+  --flat-tint:  #1e2a2e;
+
+  --sh-M:   #6ba6f0;
+  --sh-P:   #e3963c;
+  --sh-N:   #a492ee;
+  --sh-MP:  #d183dc;
+  --sh-PN:  #ee7fa6;
+  --sh-R:   #5cbb86;
+  --sh-S:   #e58c74;
+  --sh-F:   #d0a62a;
+  --sh-REC: #9aa6b4;
+  --sh-MAL: #ee8074;
+  --sh-none:#5a6c72;
+
+  --tint-amt: 20%;
+  --ink-partner: #ffffff;
+  --ink-amt: 82%;
+
+  --on-accent:  #08201f;
+  --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 28px -18px rgba(0,0,0,.9);
+  color-scheme: dark;
+}
+
+/* --------------------------------------------------------------- */
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, .eyebrow, .board-title, .btn, .dow {
+  font-family: Oswald, "Arial Narrow", ui-sans-serif, sans-serif;
+  font-weight: 500;
+  text-wrap: balance;
+}
+.mono, .pick, .num { font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace; }
+.num { font-variant-numeric: tabular-nums; }
+
+.wrap { max-width: 1200px; margin: 0 auto; padding: 0 20px 72px; }
+
+/* ---- masthead ---- */
+.masthead {
+  border-bottom: 3px double var(--line);
+  padding: 26px 0 16px;
+  display: flex; flex-wrap: wrap; gap: 20px;
+  align-items: flex-end; justify-content: space-between;
+}
+.brand { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+h1 {
+  margin: 0; font-size: 40px; font-weight: 600;
+  letter-spacing: .1em; text-transform: uppercase; line-height: 1;
+}
+h1 .k { color: var(--accent); }
+.tagline {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-size: 13.5px; color: var(--ink-2); letter-spacing: .01em;
+}
+.period { display: flex; gap: 8px; align-items: center; }
+.period label { display: block; }
+.eyebrow {
+  text-transform: uppercase; letter-spacing: .16em;
+  font-size: 11px; color: var(--ink-3); font-weight: 500;
+}
+select.field, input.field {
+  font: inherit; font-family: "IBM Plex Sans", sans-serif;
+  background: var(--surface); color: var(--ink);
+  border: 1px solid var(--line); border-radius: 3px;
+  padding: 7px 10px; min-width: 92px;
+}
+input.field { width: 92px; font-variant-numeric: tabular-nums; }
+select.field { -webkit-appearance: none; appearance: none; padding-right: 28px;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 15px) 55%, calc(100% - 10px) 55%;
+  background-size: 5px 5px, 5px 5px; background-repeat: no-repeat;
+}
+:is(select, input, button, [tabindex]):focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 2px;
+}
+
+/* ---- import strip ---- */
+.import { margin: 22px 0 0; }
+.drop {
+  display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+  border: 1.5px dashed var(--line); border-radius: 4px;
+  background: var(--surface); padding: 18px 20px;
+  transition: border-color .18s, background .18s;
+}
+.drop.over { border-color: var(--accent); background: var(--accent-tint); }
+.drop .lead { flex: 1 1 260px; min-width: 0; }
+.drop .lead strong { display: block; font-size: 15px; }
+.drop .lead span { font-size: 13px; color: var(--ink-2); }
+.btn {
+  font-size: 13.5px; letter-spacing: .06em; text-transform: uppercase;
+  border: 1px solid var(--accent); background: var(--accent); color: var(--on-accent);
+  padding: 9px 16px; border-radius: 3px; cursor: pointer;
+  transition: background .15s, color .15s;
+}
+.btn:hover { background: var(--accent-2); border-color: var(--accent-2); }
+.btn.ghost { background: transparent; color: var(--accent); }
+.btn.ghost:hover { background: var(--accent-tint); color: var(--accent-2); }
+.btn.small { font-size: 11.5px; padding: 6px 11px; }
+.btn[disabled] { opacity: .45; cursor: not-allowed; }
+
+details.howto { margin-top: 12px; border-top: 1px solid var(--line-soft); padding-top: 10px; }
+details.howto summary {
+  cursor: pointer; font-size: 12.5px; color: var(--ink-2);
+  list-style: none; display: inline-flex; gap: 7px; align-items: center;
+}
+details.howto summary::-webkit-details-marker { display: none; }
+details.howto summary::before { content: "+"; font-family: "IBM Plex Mono", monospace; color: var(--accent); }
+details.howto[open] summary::before { content: "–"; }
+details.howto ol { margin: 10px 0 2px; padding-left: 20px; font-size: 13.5px; color: var(--ink-2); max-width: 66ch; }
+details.howto li { margin-bottom: 3px; }
+
+.filename {
+  font-size: 12.5px; color: var(--ink-2); margin-top: 10px;
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+}
+.filename b { color: var(--ink); font-weight: 500; }
+
+/* ---- layout ---- */
+.layout {
+  display: grid; grid-template-columns: minmax(0, 1fr) 328px;
+  gap: 34px; align-items: start; margin-top: 30px;
+}
+@media (max-width: 980px) { .layout { grid-template-columns: 1fr; gap: 26px; } }
+
+/* ---- board ---- */
+.board-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 14px; flex-wrap: wrap; margin-bottom: 12px;
+}
+.board-title {
+  margin: 0; font-size: 25px; font-weight: 500;
+  text-transform: uppercase; letter-spacing: .07em;
+}
+.board-title .yr { color: var(--ink-3); }
+.grid7 { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.dowrow { gap: 1px; background: var(--line); border: 1px solid var(--line); border-bottom: 0; }
+.dow {
+  background: var(--surface-2); text-align: center; padding: 8px 2px;
+  font-size: 10.5px; letter-spacing: .13em; text-transform: uppercase; color: var(--ink-3);
+}
+.dow.sun { color: var(--red-day); }
+.days { gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.cell {
+  position: relative; background: var(--surface); min-height: 82px;
+  padding: 0; border-left: 3px solid transparent;
+}
+.cell.filled {
+  border-left-color: var(--hue);
+  background: color-mix(in srgb, var(--hue) var(--tint-amt), var(--surface));
+}
+.cell.empty { background: var(--sunken); }
+.cell:focus-within { outline: 2px solid var(--accent); outline-offset: -2px; z-index: 2; }
+.dnum {
+  position: absolute; top: 5px; left: 7px; pointer-events: none;
+  font-family: "IBM Plex Mono", monospace; font-size: 11.5px;
+  color: var(--ink-3); font-variant-numeric: tabular-nums;
+}
+.cell.red .dnum { color: var(--red-day); font-weight: 600; }
+.holname {
+  position: absolute; top: 5px; right: 6px; left: 26px; pointer-events: none;
+  font-size: 9.5px; line-height: 1.2; text-align: right; color: var(--red-day);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  text-transform: uppercase; letter-spacing: .04em;
+}
+.pick {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  -webkit-appearance: none; appearance: none;
+  background: transparent; border: 0; cursor: pointer;
+  text-align: center; text-align-last: center;
+  padding: 20px 4px 0; font-size: 16px; font-weight: 600;
+  color: color-mix(in srgb, var(--hue) var(--ink-amt), var(--ink-partner));
+}
+.cell:not(.filled) .pick { color: var(--ink-3); font-weight: 500; }
+.pick:focus { outline: none; }
+.cell:hover:not(.empty) { box-shadow: inset 0 0 0 1px var(--accent); }
+.hours-note { margin-top: 10px; font-size: 12px; color: var(--ink-3); max-width: 68ch; }
+
+/* ---- side panels ---- */
+.rail { display: flex; flex-direction: column; gap: 20px; }
+@media (min-width: 981px) { .rail { position: sticky; top: 18px; } }
+.panel {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: 4px; padding: 18px; box-shadow: var(--shadow);
+}
+.panel > .eyebrow { display: block; margin-bottom: 12px; }
+
+.hero { display: flex; align-items: baseline; gap: 9px; }
+.hero .big {
+  font-family: "IBM Plex Mono", monospace; font-size: 46px; font-weight: 600;
+  line-height: 1; letter-spacing: -.02em; font-variant-numeric: tabular-nums;
+}
+.hero .unit { font-size: 15px; color: var(--ink-2); }
+.sub { font-size: 13px; color: var(--ink-2); margin-top: 5px; }
+.sub b { font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+
+.meter { margin-top: 15px; }
+.meter .track {
+  position: relative; height: 12px; background: var(--surface-2);
+  border: 1px solid var(--line-soft); border-radius: 2px; overflow: hidden;
+}
+.meter .fill { position: absolute; inset: 0 auto 0 0; background: var(--accent); border-radius: 2px 0 0 2px; }
+.meter .over { position: absolute; top: 0; bottom: 0; background: var(--good); }
+.meter .mark { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--ink); }
+.meter .scale {
+  display: flex; justify-content: space-between; margin-top: 6px;
+  font-size: 11px; color: var(--ink-3); font-variant-numeric: tabular-nums;
+}
+.delta {
+  display: inline-flex; align-items: center; gap: 8px; margin-top: 14px;
+  padding: 7px 12px; border-radius: 3px; font-size: 13.5px; font-weight: 500;
+}
+.delta .amt { font-family: "IBM Plex Mono", monospace; font-weight: 600; font-variant-numeric: tabular-nums; }
+.delta.warn { background: var(--warn-tint); color: var(--warn); }
+.delta.good { background: var(--good-tint); color: var(--good); }
+.delta.flat { background: var(--flat-tint); color: var(--flat); }
+.delta-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.delta-row .delta { margin-top: 14px; }
+.delta-row .btn { margin-top: 14px; }
+
+.formula { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line-soft); font-size: 12px; color: var(--ink-3); }
+.formula .row { display: flex; justify-content: space-between; gap: 10px; padding: 2px 0; }
+.formula .row span:last-child { font-family: "IBM Plex Mono", monospace; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+
+/* ---- breakdown chart ---- */
+.bars { display: flex; flex-direction: column; gap: 9px; }
+.bar-row { display: grid; grid-template-columns: 30px 1fr auto; gap: 10px; align-items: center; cursor: default; }
+.bar-row .chip {
+  font-family: "IBM Plex Mono", monospace; font-size: 11.5px; font-weight: 600;
+  text-align: center; padding: 3px 0; border-radius: 2px;
+  border-left: 3px solid var(--hue);
+  background: color-mix(in srgb, var(--hue) var(--tint-amt), var(--surface));
+  color: color-mix(in srgb, var(--hue) var(--ink-amt), var(--ink-partner));
+}
+.bar-row .lane { min-width: 0; }
+.bar-row .lane .lbl { font-size: 12px; color: var(--ink-2); margin-bottom: 3px; }
+.bar-row .lane .t { height: 8px; background: var(--surface-2); border-radius: 0 4px 4px 0; }
+.bar-row .lane .v { height: 8px; background: var(--accent); border-radius: 0 4px 4px 0; min-width: 3px; transition: width .3s ease; }
+.bar-row .val { text-align: right; font-family: "IBM Plex Mono", monospace; font-size: 12.5px; font-variant-numeric: tabular-nums; color: var(--ink); }
+.bar-row .val small { display: block; font-size: 10.5px; color: var(--ink-3); }
+.bar-row:hover .v { background: var(--accent-2); }
+.excluded { font-size: 11.5px; color: var(--ink-3); margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line-soft); }
+
+/* ---- lists ---- */
+.hol-list { list-style: none; margin: 0; padding: 0; font-size: 13px; }
+.hol-list li { display: flex; justify-content: space-between; gap: 10px; padding: 4px 0; border-bottom: 1px solid var(--line-soft); }
+.hol-list li:last-child { border-bottom: 0; }
+.hol-list .d { font-family: "IBM Plex Mono", monospace; color: var(--red-day); font-variant-numeric: tabular-nums; }
+.legend { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; font-size: 12px; }
+.legend div { display: flex; align-items: center; gap: 7px; color: var(--ink-2); }
+.legend i { width: 10px; height: 10px; background: var(--hue); border-radius: 2px; flex: none; }
+.legend b { font-family: "IBM Plex Mono", monospace; font-size: 11px; color: var(--ink); font-weight: 600; }
+.legend-panel { margin-top: 18px; }
+.legend-panel .legend { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+
+/* ---- empty state ---- */
+.empty-state {
+  border: 1px solid var(--line); background: var(--surface); border-radius: 4px;
+  padding: 40px 28px; text-align: center; box-shadow: var(--shadow);
+}
+.empty-state h2 { margin: 0 0 8px; font-size: 21px; text-transform: uppercase; letter-spacing: .06em; }
+.empty-state p { margin: 0 auto 18px; max-width: 52ch; color: var(--ink-2); font-size: 14px; }
+
+/* ---- tooltip ---- */
+#tip {
+  position: fixed; z-index: 50; pointer-events: none; opacity: 0;
+  transition: opacity .12s; background: var(--ink); color: var(--paper);
+  font-size: 12px; padding: 6px 9px; border-radius: 3px; white-space: nowrap;
+  box-shadow: 0 6px 20px -8px rgba(0,0,0,.5);
+}
+#tip.on { opacity: 1; }
+
+.toast {
+  position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%) translateY(12px);
+  background: var(--ink); color: var(--paper); padding: 10px 18px; border-radius: 3px;
+  font-size: 13px; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; z-index: 60;
+}
+.toast.on { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 12px; color: var(--ink-3); max-width: 78ch; }
+footer code { font-family: "IBM Plex Mono", monospace; color: var(--ink-2); }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+
+<div class="wrap">
+  <header class="masthead">
+    <div class="brand">
+      <h1>Eure<span class="k">k</span>a</h1>
+      <p class="tagline">Analisi turni e monte ore — UTIC</p>
+    </div>
+    <div class="period">
+      <div>
+        <label class="eyebrow" for="mese">Mese</label>
+        <select class="field" id="mese"></select>
+      </div>
+      <div>
+        <label class="eyebrow" for="anno">Anno</label>
+        <input class="field" id="anno" type="number" min="2000" max="2100" step="1">
+      </div>
+    </div>
+  </header>
+
+  <section class="import">
+    <div class="drop" id="drop">
+      <div class="lead">
+        <strong>Trascina qui il calendario .ics</strong>
+        <span>Oppure scegli il file esportato da Zucchetti Zscheduling.</span>
+      </div>
+      <input type="file" id="file" accept=".ics,text/calendar" hidden>
+      <button class="btn" id="pick-file">Scegli file</button>
+      <button class="btn ghost" id="demo">Dati di esempio</button>
+    </div>
+    <div class="filename" id="filename" hidden></div>
+    <details class="howto">
+      <summary>Come esportare il file da Zucchetti</summary>
+      <ol>
+        <li>Entra su Zucchetti.</li>
+        <li>Apri il menu a quadratini in alto a sinistra ed entra in <b>Zscheduling</b>.</li>
+        <li>In alto clicca su <b>Calendario Operatore</b>.</li>
+        <li>Cambia la visualizzazione da <b>Settimanale</b> a <b>Mensile</b>.</li>
+        <li>Clicca su <b>Esporta</b> e scarica il file in formato ICS.</li>
+      </ol>
+    </details>
+  </section>
+
+  <div id="stage"></div>
+
+  <footer>
+    Le ore sono calcolate con le stesse regole dell'app originale: ogni turno vale le ore della tabella
+    (<code>M 7 · P 7 · N 10 · MP 14 · PN 17 · F 6 · MAL 6 · REC −6 · R 0 · S 0</code>), il totale mensile somma
+    tutti i turni <b>esclusi R, S e REC</b>, e le ore previste valgono
+    <code>(giorni del mese − domeniche − festività) × 6</code>. I dati restano nel tuo browser: nessun file viene caricato online.
+  </footer>
+</div>
+
+<div id="tip" role="status"></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+"use strict";
+
+/* ===============================================================
+   Regole di calcolo — porting 1:1 da infermieri.py
+   =============================================================== */
+const ORE_MAP = { M: 7, P: 7, N: 10, MP: 14, PN: 17, REC: -6, F: 6, S: 0, MAL: 6, "-": 0, R: 0 };
+const NON_CONTEGGIATI = ["R", "S", "REC"];          // esclusi da ore_mensili
+const CODES = ["-", "M", "P", "N", "MP", "PN", "REC", "F", "S", "MAL", "R"];
+const NOMI = {
+  "-": "Nessun turno", M: "Mattina", P: "Pomeriggio", N: "Notte", MP: "Mattina + Pomeriggio",
+  PN: "Pomeriggio + Notte", REC: "Recupero", F: "Ferie", S: "Smonto notte", MAL: "Malattia", R: "Riposo"
+};
+const MESI = ["Gennaio","Febbraio","Marzo","Aprile","Maggio","Giugno","Luglio","Agosto","Settembre","Ottobre","Novembre","Dicembre"];
+const GIORNI = ["Lunedì","Martedì","Mercoledì","Giovedì","Venerdì","Sabato","Domenica"];
+
+function easter(year) {                              // Meeus/Jones/Butcher — gregoriano
+  const a = year % 19, b = Math.floor(year / 100), c = year % 100;
+  const d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25);
+  const g = Math.floor((b - f + 1) / 3), h = (19 * a + b - d - g + 15) % 30;
+  const i = Math.floor(c / 4), k = c % 4, l = (32 + 2 * e + 2 * i - h - k) % 7;
+  const m = Math.floor((a + 11 * h + 22 * l) / 451);
+  const month = Math.floor((h + l - 7 * m + 114) / 31);
+  const day = ((h + l - 7 * m + 114) % 31) + 1;
+  return new Date(year, month - 1, day);
+}
+
+function festivitaItaliane(year) {
+  const hol = [
+    { month: 1, day: 1,  name: "Capodanno" },
+    { month: 1, day: 6,  name: "Epifania" },
+    { month: 4, day: 25, name: "Liberazione" },
+    { month: 5, day: 1,  name: "Lavoro" },
+    { month: 6, day: 2,  name: "Repubblica" },
+    { month: 8, day: 15, name: "Ferragosto" },
+    { month: 11, day: 1, name: "Ognissanti" },
+    { month: 12, day: 8, name: "Immacolata" },
+    { month: 12, day: 25, name: "Natale" },
+    { month: 12, day: 26, name: "S.Stefano" }
+  ];
+  const pasquetta = easter(year);
+  pasquetta.setDate(pasquetta.getDate() + 1);
+  hol.push({ month: pasquetta.getMonth() + 1, day: pasquetta.getDate(), name: "Pasquetta" });
+  return hol;
+}
+
+const giorniNelMese = (y, m1) => new Date(y, m1, 0).getDate();          // m1 = 1..12
+
+function domenicheNelMese(y, m1) {
+  let n = 0;
+  const tot = giorniNelMese(y, m1);
+  for (let d = 1; d <= tot; d++) if (new Date(y, m1 - 1, d).getDay() === 0) n++;
+  return n;
+}
+
+function calcolaMetriche(shifts, monthIndex, year) {
+  const m1 = monthIndex + 1;
+  const days = giorniNelMese(year, m1);
+
+  const festivita = festivitaItaliane(year).filter(h => h.month === m1).sort((a, b) => a.day - b.day);
+  const domeniche = domenicheNelMese(year, m1);
+
+  const validi = shifts.slice(0, days).filter(s => s !== "-");
+  const conteggi = {}, oreTotali = {};
+  for (const code of Object.keys(ORE_MAP)) {
+    if (code === "-") continue;
+    conteggi[code] = validi.filter(s => s === code).length;
+    oreTotali[code] = conteggi[code] * ORE_MAP[code];
+  }
+
+  const oreMensili = Object.keys(oreTotali)
+    .filter(code => !NON_CONTEGGIATI.includes(code))
+    .reduce((sum, code) => sum + oreTotali[code], 0);
+
+  const targetOre = (days - domeniche - festivita.length) * 6;
+  const differenza = oreMensili - targetOre;
+
+  return {
+    days, festivita, domeniche, conteggi, oreTotali, oreMensili, targetOre,
+    oreMancanti: Math.max(-differenza, 0),
+    oreStraordinario: Math.max(differenza, 0)
+  };
+}
+
+/* ===============================================================
+   Lettura del file .ics
+   =============================================================== */
+function unfold(text) {
+  return text.replace(/\r\n/g, "\n").replace(/\r/g, "\n").replace(/\n[ \t]/g, "");
+}
+function unescapeIcs(v) {
+  return v.replace(/\\n/gi, " ").replace(/\\,/g, ",").replace(/\\;/g, ";").replace(/\\\\/g, "\\");
+}
+function parseIcsDate(raw, params) {
+  const v = raw.trim();
+  let m = v.match(/^(\d{4})(\d{2})(\d{2})$/);
+  if (m) return { y: +m[1], m: +m[2], d: +m[3] };
+  m = v.match(/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(Z)?$/);
+  if (!m) return null;
+  if (m[7] === "Z" && !/TZID=/i.test(params)) {          // UTC → data in UTC, come icalendar
+    const dt = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5], +m[6]));
+    return { y: dt.getUTCFullYear(), m: dt.getUTCMonth() + 1, d: dt.getUTCDate() };
+  }
+  return { y: +m[1], m: +m[2], d: +m[3] };
+}
+function turnoDaSummary(summary) {                      // stesso ordine di priorità dell'originale
+  if (summary.includes("MATTINA")) return "M";
+  if (summary.includes("POMERIGGIO")) return "P";
+  if (summary.includes("NOTTE")) return "N";
+  if (summary.includes("SMONTO")) return "S";
+  if (summary.includes("RECUPERO") || summary.includes("RIPOSO")) return "R";
+  return "-";
+}
+function estraiDaIcs(text) {
+  const lines = unfold(text).split("\n");
+  const eventi = [];
+  let cur = null;
+  for (const line of lines) {
+    const t = line.trim();
+    if (/^BEGIN:VEVENT$/i.test(t)) { cur = { summary: "", dtstart: null, params: "" }; continue; }
+    if (/^END:VEVENT$/i.test(t)) {
+      if (cur && cur.dtstart) {
+        const date = parseIcsDate(cur.dtstart, cur.params);
+        if (date) eventi.push({ date, turno: turnoDaSummary(cur.summary), summary: cur.summary });
+      }
+      cur = null; continue;
+    }
+    if (!cur) continue;
+    const sep = t.indexOf(":");
+    if (sep < 0) continue;
+    const head = t.slice(0, sep);
+    const value = t.slice(sep + 1);
+    const name = head.split(";")[0].toUpperCase();
+    if (name === "SUMMARY") cur.summary = unescapeIcs(value).toUpperCase();
+    else if (name === "DTSTART") { cur.dtstart = value; cur.params = head; }
+  }
+  return eventi;
+}
+
+/* ===============================================================
+   Stato
+   =============================================================== */
+const STORE = "eureka-turni-v1";
+const oggi = new Date();
+const state = {
+  month: oggi.getMonth(),
+  year: oggi.getFullYear(),
+  fileName: "",
+  importati: {},   // "YYYY-M" -> array di codici dal file
+  modificati: {}   // "YYYY-M" -> array di codici dopo le correzioni manuali
+};
+const chiave = (y, m) => y + "-" + m;
+
+function salva() {
+  try {
+    localStorage.setItem(STORE, JSON.stringify({
+      month: state.month, year: state.year, fileName: state.fileName,
+      importati: state.importati, modificati: state.modificati
+    }));
+  } catch (e) { /* storage non disponibile: si continua in memoria */ }
+}
+function ripristina() {
+  try {
+    const raw = localStorage.getItem(STORE);
+    if (!raw) return;
+    const d = JSON.parse(raw);
+    if (d && typeof d === "object") {
+      if (Number.isInteger(d.month)) state.month = d.month;
+      if (Number.isInteger(d.year)) state.year = d.year;
+      state.fileName = typeof d.fileName === "string" ? d.fileName : "";
+      state.importati = d.importati && typeof d.importati === "object" ? d.importati : {};
+      state.modificati = d.modificati && typeof d.modificati === "object" ? d.modificati : {};
+    }
+  } catch (e) { /* dato corrotto: si riparte puliti */ }
+}
+
+function turniCorrenti() {
+  const k = chiave(state.year, state.month);
+  const days = giorniNelMese(state.year, state.month + 1);
+  const base = state.modificati[k] || state.importati[k];
+  if (!base) return null;
+  const out = base.slice(0, days);
+  while (out.length < days) out.push("-");
+  return out;
+}
+function haDati() {
+  return Object.keys(state.importati).length > 0 || Object.keys(state.modificati).length > 0;
+}
+
+function caricaEventi(eventi, nomeFile) {
+  const perMese = {};
+  for (const ev of eventi) {
+    const k = chiave(ev.date.y, ev.date.m - 1);
+    (perMese[k] = perMese[k] || {})[ev.date.d] = ev.turno;   // ultimo evento del giorno, come nell'originale
+  }
+  let migliore = null, maxEventi = 0;
+  for (const k of Object.keys(perMese)) {
+    const [y, m] = k.split("-").map(Number);
+    const days = giorniNelMese(y, m + 1);
+    const lista = [];
+    for (let d = 1; d <= days; d++) lista.push(perMese[k][d] || "-");
+    state.importati[k] = lista;
+    delete state.modificati[k];
+    const reali = lista.filter(s => s !== "-").length;
+    if (reali > maxEventi) { maxEventi = reali; migliore = [y, m]; }
+  }
+  if (migliore) { state.year = migliore[0]; state.month = migliore[1]; }
+  state.fileName = nomeFile;
+  salva();
+  render();
+  if (!migliore) toast("Nessun turno riconosciuto nel file.");
+  else toast("Caricati " + maxEventi + " turni · " + MESI[migliore[1]] + " " + migliore[0]);
+}
+
+/* ===============================================================
+   Rendering
+   =============================================================== */
+const $ = sel => document.querySelector(sel);
+const stage = $("#stage");
+const tip = $("#tip");
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+function render() {
+  $("#mese").value = String(state.month);
+  $("#anno").value = String(state.year);
+
+  const fn = $("#filename");
+  if (state.fileName) {
+    fn.hidden = false;
+    const k = chiave(state.year, state.month);
+    const modificato = !!state.modificati[k];
+    fn.innerHTML = "File: <b>" + esc(state.fileName) + "</b>" +
+      (modificato ? ' <button class="btn ghost small" id="reset">Annulla correzioni del mese</button>' : "");
+    const rst = $("#reset");
+    if (rst) rst.addEventListener("click", () => {
+      delete state.modificati[chiave(state.year, state.month)];
+      salva(); render(); toast("Turni riportati ai valori del file.");
+    });
+  } else { fn.hidden = true; fn.innerHTML = ""; }
+
+  const turni = turniCorrenti();
+  if (!turni) { stage.innerHTML = vuoto(); return; }
+
+  const m = calcolaMetriche(turni, state.month, state.year);
+  stage.innerHTML =
+    '<div class="layout">' +
+      '<section>' + tabellone(turni, m) + legenda(turni) + '</section>' +
+      '<aside class="rail">' + bilancio(m) + distribuzione(m) + pannelloFestivita(m) + '</aside>' +
+    '</div>';
+  agganciaSelect();
+  agganciaTooltip();
+  agganciaCopia(m);
+}
+
+function vuoto() {
+  const suffisso = haDati() ? "" :
+    " Se vuoi vedere subito come funziona, carica un mese di esempio.";
+  return '<div class="empty-state">' +
+    '<h2>Nessun turno per ' + MESI[state.month] + " " + state.year + "</h2>" +
+    "<p>Carica il file .ics del planning: i turni vengono letti dal calendario, disposti sul mese e " +
+    "trasformati in ore." + suffisso + "</p>" +
+    '<button class="btn" id="demo2">Dati di esempio</button></div>';
+}
+
+function tabellone(turni, m) {
+  const m1 = state.month + 1;
+  const primo = new Date(state.year, state.month, 1).getDay();
+  const offset = (primo + 6) % 7;                     // lunedì come primo giorno
+  const holByDay = {};
+  for (const h of m.festivita) holByDay[h.day] = h.name;
+
+  let head = '<div class="grid7 dowrow">';
+  GIORNI.forEach((g, i) => {
+    head += '<div class="dow' + (i === 6 ? " sun" : "") + '">' + g.slice(0, 3) + "</div>";
+  });
+  head += "</div>";
+
+  let cells = '<div class="grid7 days">';
+  for (let i = 0; i < offset; i++) cells += '<div class="cell empty"></div>';
+  for (let d = 1; d <= m.days; d++) {
+    const code = turni[d - 1] || "-";
+    const dow = new Date(state.year, state.month, d).getDay();
+    const rosso = dow === 0 || holByDay[d];
+    const cls = "cell" + (code !== "-" ? " filled" : "") + (rosso ? " red" : "");
+    const opts = CODES.map(c =>
+      '<option value="' + c + '"' + (c === code ? " selected" : "") + ">" + c + "</option>").join("");
+    cells += '<div class="' + cls + '" style="--hue: var(--sh-' + (code === "-" ? "none" : code) + ')">' +
+      '<span class="dnum">' + d + "</span>" +
+      (holByDay[d] ? '<span class="holname" title="' + esc(holByDay[d]) + '">' + esc(holByDay[d]) + "</span>" : "") +
+      '<select class="pick" data-day="' + d + '" aria-label="Turno di ' + d + " " + MESI[state.month] +
+        '" title="' + esc(NOMI[code]) + " · " + ORE_MAP[code] + 'h">' + opts + "</select>" +
+      "</div>";
+  }
+  const resto = (offset + m.days) % 7;
+  if (resto) for (let i = resto; i < 7; i++) cells += '<div class="cell empty"></div>';
+  cells += "</div>";
+
+  return '<div class="board-head">' +
+      '<h2 class="board-title">' + MESI[state.month] + ' <span class="yr">' + state.year + "</span></h2>" +
+      '<span class="eyebrow">Clicca una casella per correggere il turno</span>' +
+    "</div>" + head + cells +
+    '<p class="hours-note">' + m.days + " giorni · " + m.domeniche + " domeniche · " +
+      m.festivita.length + " festività — i giorni in rosso non concorrono alle ore previste.</p>";
+}
+
+function bilancio(m) {
+  const diff = m.oreMensili - m.targetOre;
+  let cls = "flat", testo = "In linea con le ore previste", amt = "0h";
+  if (m.oreMancanti > 0) { cls = "warn"; testo = "Ore mancanti"; amt = "−" + m.oreMancanti + "h"; }
+  else if (m.oreStraordinario > 0) { cls = "good"; testo = "Straordinario"; amt = "+" + m.oreStraordinario + "h"; }
+
+  const scala = Math.max(m.oreMensili, m.targetOre, 1);
+  const pctLav = Math.min(m.oreMensili, m.targetOre) / scala * 100;
+  const pctTarget = m.targetOre / scala * 100;
+  const over = diff > 0 ? (diff / scala * 100) : 0;
+
+  return '<div class="panel">' +
+    '<span class="eyebrow">Bilancio ore</span>' +
+    '<div class="hero"><span class="big num">' + m.oreMensili + '</span><span class="unit">ore lavorate</span></div>' +
+    '<p class="sub">su <b>' + m.targetOre + "</b> ore previste per " + MESI[state.month].toLowerCase() + "</p>" +
+    '<div class="meter"><div class="track">' +
+      '<div class="fill" style="width:' + pctLav.toFixed(1) + '%"></div>' +
+      (over > 0 ? '<div class="over" style="left:' + pctTarget.toFixed(1) + '%;width:' + over.toFixed(1) + '%"></div>' : "") +
+      '<div class="mark" style="left:calc(' + pctTarget.toFixed(1) + '% - 1px)"></div>' +
+    '</div><div class="scale"><span>0h</span><span>previste ' + m.targetOre + "h</span></div></div>" +
+    '<div class="delta-row"><div class="delta ' + cls + '"><span>' + testo + '</span><span class="amt">' + amt + "</span></div>" +
+    '<button class="btn ghost small" id="copia">Copia riepilogo</button></div>' +
+    '<div class="formula">' +
+      '<div class="row"><span>Giorni del mese</span><span>' + m.days + "</span></div>" +
+      '<div class="row"><span>− Domeniche</span><span>' + m.domeniche + "</span></div>" +
+      '<div class="row"><span>− Festività</span><span>' + m.festivita.length + "</span></div>" +
+      '<div class="row"><span>× 6 ore al giorno</span><span>' + m.targetOre + "h</span></div>" +
+    "</div></div>";
+}
+
+function distribuzione(m) {
+  const righe = Object.keys(m.conteggi)
+    .filter(c => m.conteggi[c] > 0)
+    .sort((a, b) => m.conteggi[b] - m.conteggi[a] || a.localeCompare(b));
+
+  if (!righe.length) {
+    return '<div class="panel"><span class="eyebrow">Distribuzione turni</span>' +
+      '<p class="sub">Nessun turno inserito in questo mese.</p></div>';
+  }
+  const max = Math.max(...righe.map(c => m.conteggi[c]));
+  const totale = righe.reduce((s, c) => s + m.conteggi[c], 0);
+
+  let bars = '<div class="bars">';
+  for (const c of righe) {
+    const n = m.conteggi[c], ore = m.oreTotali[c];
+    const quota = Math.round(n / totale * 100);
+    const escluso = NON_CONTEGGIATI.includes(c);
+    bars += '<div class="bar-row" style="--hue: var(--sh-' + c + ')" data-tip="' +
+        esc(NOMI[c]) + " · " + n + " turni · " + ore + "h · " + quota + '% del mese">' +
+      '<span class="chip">' + c + "</span>" +
+      '<span class="lane"><span class="lbl">' + esc(NOMI[c]) + "</span>" +
+        '<span class="t"><span class="v" style="display:block;width:' + (n / max * 100).toFixed(1) + '%"></span></span></span>' +
+      '<span class="val">' + n + "×<small>" + (escluso ? "—" : ore + "h") + "</small></span>" +
+      "</div>";
+  }
+  bars += "</div>";
+
+  const esclusiPresenti = righe.filter(c => NON_CONTEGGIATI.includes(c));
+  const nota = esclusiPresenti.length
+    ? '<p class="excluded">' + esclusiPresenti.join(", ") +
+      " non concorrono al totale mensile (segnati con —).</p>"
+    : "";
+
+  return '<div class="panel"><span class="eyebrow">Distribuzione turni</span>' + bars + nota + "</div>";
+}
+
+function pannelloFestivita(m) {
+  if (!m.festivita.length) return "";
+  return '<div class="panel"><span class="eyebrow">Festività del mese</span><ul class="hol-list">' +
+    m.festivita.map(h => "<li><span>" + esc(h.name) + '</span><span class="d">' +
+      String(h.day).padStart(2, "0") + "/" + String(state.month + 1).padStart(2, "0") + "</span></li>").join("") +
+    "</ul></div>";
+}
+
+function legenda(turni) {
+  const usati = CODES.filter(c => c !== "-" && turni.includes(c));
+  const mostra = usati.length ? usati : ["M", "P", "N", "S", "R"];
+  return '<div class="panel legend-panel"><span class="eyebrow">Legenda</span><div class="legend">' +
+    mostra.map(c => '<div style="--hue: var(--sh-' + c + ')"><i></i><b>' + c + "</b> " +
+      esc(NOMI[c]) + "</div>").join("") + "</div></div>";
+}
+
+function testoRiepilogo(m) {
+  const righe = Object.keys(m.conteggi).filter(c => m.conteggi[c] > 0)
+    .sort((a, b) => m.conteggi[b] - m.conteggi[a] || a.localeCompare(b))
+    .map(c => "  " + c.padEnd(4) + NOMI[c].padEnd(22) + String(m.conteggi[c]).padStart(2) + " turni" +
+      (NON_CONTEGGIATI.includes(c) ? "" : "  " + m.oreTotali[c] + "h"));
+  const diff = m.oreMensili - m.targetOre;
+  const saldo = diff > 0 ? "straordinario +" + diff + "h" : diff < 0 ? "ore mancanti " + (-diff) + "h" : "in linea";
+  return [
+    "Riepilogo turni — " + MESI[state.month] + " " + state.year,
+    "Ore lavorate: " + m.oreMensili + "h  ·  Ore previste: " + m.targetOre + "h  ·  " + saldo,
+    "Previste = (" + m.days + " giorni − " + m.domeniche + " domeniche − " + m.festivita.length + " festività) × 6",
+    "", "Turni:", ...righe
+  ].join("\n");
+}
+
+function agganciaCopia(m) {
+  const btn = document.getElementById("copia");
+  if (!btn) return;
+  btn.addEventListener("click", async () => {
+    const testo = testoRiepilogo(m);
+    try {
+      await navigator.clipboard.writeText(testo);
+      toast("Riepilogo copiato negli appunti.");
+    } catch (e) {
+      const ta = document.createElement("textarea");
+      ta.value = testo; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      const ok = document.execCommand && document.execCommand("copy");
+      ta.remove();
+      toast(ok ? "Riepilogo copiato negli appunti." : "Copia non riuscita: seleziona i dati a mano.");
+    }
+  });
+}
+
+function agganciaSelect() {
+  stage.querySelectorAll("select.pick").forEach(sel => {
+    sel.addEventListener("change", () => {
+      const k = chiave(state.year, state.month);
+      const attuali = turniCorrenti().slice();
+      attuali[Number(sel.dataset.day) - 1] = sel.value;
+      state.modificati[k] = attuali;
+      salva();
+      render();
+    });
+  });
+}
+
+function agganciaTooltip() {
+  stage.querySelectorAll("[data-tip]").forEach(el => {
+    el.addEventListener("mouseenter", () => { tip.textContent = el.dataset.tip; tip.classList.add("on"); });
+    el.addEventListener("mousemove", e => {
+      tip.style.left = Math.min(e.clientX + 14, window.innerWidth - tip.offsetWidth - 8) + "px";
+      tip.style.top = (e.clientY - tip.offsetHeight - 10) + "px";
+    });
+    el.addEventListener("mouseleave", () => tip.classList.remove("on"));
+  });
+}
+
+let toastTimer;
+function toast(msg) {
+  const el = $("#toast");
+  el.textContent = msg;
+  el.classList.add("on");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove("on"), 3200);
+}
+
+/* ===============================================================
+   Ingressi
+   =============================================================== */
+MESI.forEach((nome, i) => {
+  const o = document.createElement("option");
+  o.value = String(i); o.textContent = nome;
+  $("#mese").appendChild(o);
+});
+$("#mese").addEventListener("change", e => { state.month = Number(e.target.value); salva(); render(); });
+$("#anno").addEventListener("change", e => {
+  const v = Number(e.target.value);
+  if (v >= 2000 && v <= 2100) { state.year = v; salva(); render(); }
+  else e.target.value = String(state.year);
+});
+
+$("#pick-file").addEventListener("click", () => $("#file").click());
+$("#file").addEventListener("change", e => { if (e.target.files[0]) leggiFile(e.target.files[0]); e.target.value = ""; });
+
+function leggiFile(file) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    const testo = String(reader.result || "");
+    if (!testo.trim()) { toast("Il file .ics è vuoto."); return; }
+    if (!/BEGIN:VCALENDAR/i.test(testo)) { toast("Questo non sembra un file .ics valido."); return; }
+    const eventi = estraiDaIcs(testo);
+    if (!eventi.length) { toast("Nessun evento trovato nel file."); return; }
+    caricaEventi(eventi, file.name);
+  };
+  reader.onerror = () => toast("Non sono riuscito a leggere il file.");
+  reader.readAsText(file);
+}
+
+const drop = $("#drop");
+["dragenter", "dragover"].forEach(ev => drop.addEventListener(ev, e => {
+  e.preventDefault(); drop.classList.add("over");
+}));
+["dragleave", "drop"].forEach(ev => drop.addEventListener(ev, e => {
+  e.preventDefault(); if (ev === "dragleave" && drop.contains(e.relatedTarget)) return;
+  drop.classList.remove("over");
+}));
+drop.addEventListener("drop", e => {
+  const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+  if (f) leggiFile(f);
+});
+
+/* mese dimostrativo: rotazione M · P · N · S · R · R con ferie e un recupero */
+function datiEsempio() {
+  const y = state.year, m1 = state.month + 1;
+  const days = giorniNelMese(y, m1);
+  const rot = ["M", "P", "N", "S", "R", "R"];
+  const eventi = [];
+  const label = { M: "Turno Mattina", P: "Turno Pomeriggio", N: "Turno Notte", S: "Smonto Notte", R: "Riposo" };
+  for (let d = 1; d <= days; d++) {
+    let code = rot[(d - 1) % rot.length];
+    if (d >= 12 && d <= 15) code = "F";
+    if (d === 22) code = "REC";
+    if (code === "F" || code === "REC") continue;      // non esistono come evento nell'ics
+    eventi.push({ date: { y, m: m1, d }, turno: code, summary: label[code].toUpperCase() });
+  }
+  caricaEventi(eventi, "esempio-turni.ics");
+  const k = chiave(y, state.month);
+  const lista = state.importati[k].slice();
+  for (let d = 12; d <= 15 && d <= days; d++) lista[d - 1] = "F";
+  if (days >= 22) lista[21] = "REC";
+  state.modificati[k] = lista;
+  salva(); render();
+  toast("Mese di esempio caricato — prova a cambiare qualche turno.");
+}
+$("#demo").addEventListener("click", datiEsempio);
+document.addEventListener("click", e => { if (e.target && e.target.id === "demo2") datiEsempio(); });
+
+ripristina();
+render();
+</script>
