@@ -1,0 +1,900 @@
+<title>Eureka Turni</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* ---------------------------------------------------------------
+   Token — il blocco chiaro è la base; i due blocchi scuri
+   ridefiniscono solo i valori.
+   --------------------------------------------------------------- */
+:root {
+  --paper:      #e9edee;
+  --surface:    #ffffff;
+  --surface-2:  #f3f6f6;
+  --sunken:     #dfe5e6;
+  --ink:        #0f1a1d;
+  --ink-2:      #445459;
+  --ink-3:      #6d8087;
+  --line:       #ccd7d9;
+  --line-soft:  #e2eaeb;
+  --accent:     #0c6862;
+  --accent-2:   #0a534e;
+  --accent-tint:#dcefed;
+  --on-accent:  #ffffff;
+  --red-day:    #a33124;
+
+  --good:       #146c46;
+  --good-tint:  #dcefe4;
+  --warn:       #8a5a00;
+  --warn-tint:  #f6ebd4;
+  --flat:       #4f6167;
+  --flat-tint:  #e6ecee;
+
+  /* tinte dei turni — validate su sfondo chiaro */
+  --sh-M:   #1f6fd0;   /* mattina   — blu     */
+  --sh-P:   #c07a12;   /* pomeriggio— ambra   */
+  --sh-N:   #9b2fb0;   /* notte     — porpora */
+  --sh-R:   #17864c;   /* riposo    — verde   */
+  --sh-F:   #0f7d8f;   /* ferie     — pieno   */
+  --sh-MAL: #c4152b;   /* malattia  — rosso   */
+  --sh-REC: #5f6b78;   /* recupero  — ardesia */
+  --sh-none:#93a3a8;
+  --on-solid:   #ffffff;
+
+  --tint-amt: 18%;
+  --ink-partner: #0b1315;
+  --ink-amt: 74%;
+
+  --shadow: 0 1px 2px rgba(15,26,29,.06), 0 8px 24px -16px rgba(15,26,29,.28);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper:      #0d1417;
+    --surface:    #151e21;
+    --surface-2:  #1b262a;
+    --sunken:     #101a1d;
+    --ink:        #e8f0f1;
+    --ink-2:      #a8bcc1;
+    --ink-3:      #7d9298;
+    --line:       #2b3a3f;
+    --line-soft:  #223035;
+    --accent:     #4cc2b4;
+    --accent-2:   #6fd6c9;
+    --accent-tint:#123536;
+    --on-accent:  #08201f;
+    --red-day:    #e0796a;
+
+    --good:       #5cbb86;
+    --good-tint:  #143026;
+    --warn:       #d9a63c;
+    --warn-tint:  #33280f;
+    --flat:       #9aacb2;
+    --flat-tint:  #1e2a2e;
+
+    --sh-M:   #4c90d0;
+    --sh-P:   #a9851d;
+    --sh-N:   #be58d6;
+    --sh-R:   #4c9e70;
+    --sh-F:   #4798a7;
+    --sh-MAL: #dc5a55;
+    --sh-REC: #818c97;
+    --sh-none:#5a6c72;
+    --on-solid:   #0b1315;
+
+    --tint-amt: 26%;
+    --ink-partner: #ffffff;
+    --ink-amt: 82%;
+
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 28px -18px rgba(0,0,0,.9);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper:      #0d1417;
+  --surface:    #151e21;
+  --surface-2:  #1b262a;
+  --sunken:     #101a1d;
+  --ink:        #e8f0f1;
+  --ink-2:      #a8bcc1;
+  --ink-3:      #7d9298;
+  --line:       #2b3a3f;
+  --line-soft:  #223035;
+  --accent:     #4cc2b4;
+  --accent-2:   #6fd6c9;
+  --accent-tint:#123536;
+  --on-accent:  #08201f;
+  --red-day:    #e0796a;
+
+  --good:       #5cbb86;
+  --good-tint:  #143026;
+  --warn:       #d9a63c;
+  --warn-tint:  #33280f;
+  --flat:       #9aacb2;
+  --flat-tint:  #1e2a2e;
+
+  --sh-M:   #4c90d0;
+  --sh-P:   #a9851d;
+  --sh-N:   #be58d6;
+  --sh-R:   #4c9e70;
+  --sh-F:   #4798a7;
+  --sh-MAL: #dc5a55;
+  --sh-REC: #818c97;
+  --sh-none:#5a6c72;
+  --on-solid:   #0b1315;
+
+  --tint-amt: 26%;
+  --ink-partner: #ffffff;
+  --ink-amt: 82%;
+
+  --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 28px -18px rgba(0,0,0,.9);
+  color-scheme: dark;
+}
+
+/* --------------------------------------------------------------- */
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, .eyebrow, .board-title, .btn, .dow {
+  font-family: Oswald, "Arial Narrow", ui-sans-serif, sans-serif;
+  font-weight: 500;
+  text-wrap: balance;
+}
+.mono, .pick, .num { font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace; }
+.num { font-variant-numeric: tabular-nums; }
+
+.wrap { max-width: 1200px; margin: 0 auto; padding: 0 20px 72px; }
+
+/* ---- testata ---- */
+.masthead {
+  border-bottom: 3px double var(--line);
+  padding: 26px 0 16px;
+  display: flex; flex-wrap: wrap; gap: 20px 28px;
+  align-items: flex-end; justify-content: space-between;
+}
+.brand { min-width: 0; }
+.brand .row1 { display: flex; align-items: baseline; gap: 13px; flex-wrap: wrap; }
+h1 {
+  margin: 0; font-size: 40px; font-weight: 600;
+  letter-spacing: .1em; text-transform: uppercase; line-height: 1;
+}
+h1 .k { color: var(--accent); }
+.tagline { font-size: 13.5px; color: var(--ink-2); }
+.byline {
+  margin: 6px 0 0; font-size: 12px; color: var(--ink-3);
+  letter-spacing: .04em;
+}
+.byline b { color: var(--ink-2); font-weight: 500; }
+.period { display: flex; gap: 8px; align-items: flex-end; }
+.eyebrow {
+  text-transform: uppercase; letter-spacing: .16em;
+  font-size: 11px; color: var(--ink-3); font-weight: 500;
+}
+.period .eyebrow { display: block; margin-bottom: 2px; }
+select.field, input.field {
+  font: inherit; font-family: "IBM Plex Sans", sans-serif;
+  background: var(--surface); color: var(--ink);
+  border: 1px solid var(--line); border-radius: 3px;
+  padding: 7px 10px; min-width: 92px;
+}
+input.field { width: 92px; font-variant-numeric: tabular-nums; }
+select.field { -webkit-appearance: none; appearance: none; padding-right: 28px;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 15px) 55%, calc(100% - 10px) 55%;
+  background-size: 5px 5px, 5px 5px; background-repeat: no-repeat;
+}
+:is(select, input, button, [tabindex]):focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 2px;
+}
+
+/* ---- barra azioni ---- */
+.toolbar {
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+  padding: 16px 0 0;
+}
+.toolbar .spacer { flex: 1 1 auto; }
+.btn {
+  font-family: Oswald, "Arial Narrow", sans-serif;
+  font-size: 13px; letter-spacing: .06em; text-transform: uppercase;
+  border: 1px solid var(--accent); background: var(--accent); color: var(--on-accent);
+  padding: 8px 15px; border-radius: 3px; cursor: pointer;
+  transition: background .15s, color .15s, border-color .15s;
+}
+.btn:hover:not([disabled]) { background: var(--accent-2); border-color: var(--accent-2); }
+.btn.ghost { background: transparent; color: var(--accent); }
+.btn.ghost:hover:not([disabled]) { background: var(--accent-tint); color: var(--accent-2); }
+.btn.quiet { background: transparent; color: var(--ink-2); border-color: var(--line); }
+.btn.quiet:hover:not([disabled]) { background: var(--surface-2); color: var(--ink); border-color: var(--ink-3); }
+.btn.small { font-size: 11.5px; padding: 6px 11px; }
+.btn[disabled] { opacity: .38; cursor: not-allowed; }
+.btn .kbd {
+  font-family: "IBM Plex Mono", monospace; font-size: 9.5px;
+  opacity: .6; margin-left: 6px; letter-spacing: 0;
+}
+
+/* ---- tabellone ---- */
+.layout {
+  display: grid; grid-template-columns: minmax(0, 1fr) 328px;
+  gap: 34px; align-items: start; margin-top: 26px;
+}
+@media (max-width: 980px) { .layout { grid-template-columns: 1fr; gap: 26px; } }
+
+.board-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 14px; flex-wrap: wrap; margin-bottom: 12px;
+}
+.board-title {
+  margin: 0; font-size: 25px; font-weight: 500;
+  text-transform: uppercase; letter-spacing: .07em;
+}
+.board-title .yr { color: var(--ink-3); }
+.grid7 { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.dowrow { gap: 1px; background: var(--line); border: 1px solid var(--line); border-bottom: 0; }
+.dow {
+  background: var(--surface-2); text-align: center; padding: 8px 2px;
+  font-size: 10.5px; letter-spacing: .13em; text-transform: uppercase; color: var(--ink-3);
+}
+.dow.sun { color: var(--red-day); }
+.days { gap: 1px; background: var(--line); border: 1px solid var(--line); }
+
+.cell {
+  position: relative; background: var(--surface); min-height: 82px;
+  padding: 0; border-left: 3px solid transparent;
+}
+
+/* trattamenti condivisi da caselle e tessere di legenda; dichiarati dopo .cell
+   perche' a parita' di specificita' vince la regola che viene dopo */
+.tinted { background: color-mix(in srgb, var(--hue) var(--tint-amt), var(--surface)); }
+.tinted.hatch {
+  background: repeating-linear-gradient(135deg,
+    color-mix(in srgb, var(--hue) var(--tint-amt), var(--surface)) 0 9px,
+    var(--surface) 9px 18px);
+}
+.tinted.dual {
+  background: repeating-linear-gradient(135deg,
+    color-mix(in srgb, var(--hue) var(--tint-amt), var(--surface)) 0 9px,
+    color-mix(in srgb, var(--hue2) var(--tint-amt), var(--surface)) 9px 18px);
+}
+.tinted.solid { background: var(--hue); }
+.cell.tinted { border-left-color: var(--hue); }
+.cell.solid { border-left-color: color-mix(in srgb, var(--hue) 62%, var(--ink-partner)); }
+.cell.empty { background: var(--sunken); }
+.cell:focus-within { outline: 2px solid var(--accent); outline-offset: -2px; z-index: 2; }
+.dnum {
+  position: absolute; top: 5px; left: 7px; pointer-events: none;
+  font-family: "IBM Plex Mono", monospace; font-size: 11.5px;
+  color: var(--ink-3); font-variant-numeric: tabular-nums;
+}
+.cell.red .dnum { color: var(--red-day); font-weight: 600; }
+.holname {
+  position: absolute; top: 5px; right: 6px; left: 26px; pointer-events: none;
+  font-size: 9.5px; line-height: 1.2; text-align: right; color: var(--red-day);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  text-transform: uppercase; letter-spacing: .04em;
+}
+.pick {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  -webkit-appearance: none; appearance: none;
+  background: transparent; border: 0; cursor: pointer;
+  text-align: center; text-align-last: center;
+  padding: 20px 4px 0; font-size: 16px; font-weight: 600;
+  font-family: "IBM Plex Mono", monospace;
+  color: color-mix(in srgb, var(--hue) var(--ink-amt), var(--ink-partner));
+}
+.cell:not(.tinted) .pick { color: var(--ink-3); font-weight: 500; }
+.cell.solid .pick, .cell.solid .dnum, .cell.solid .holname { color: var(--on-solid); }
+.pick:focus { outline: none; }
+.cell:hover:not(.empty) { box-shadow: inset 0 0 0 1px var(--accent); }
+.hours-note { margin-top: 10px; font-size: 12px; color: var(--ink-3); max-width: 68ch; }
+
+/* ---- pannelli laterali ---- */
+.rail { display: flex; flex-direction: column; gap: 20px; }
+@media (min-width: 981px) { .rail { position: sticky; top: 18px; } }
+.panel {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: 4px; padding: 18px; box-shadow: var(--shadow);
+}
+.panel > .eyebrow { display: block; margin-bottom: 12px; }
+
+.hero { display: flex; align-items: baseline; gap: 9px; }
+.hero .big {
+  font-family: "IBM Plex Mono", monospace; font-size: 46px; font-weight: 600;
+  line-height: 1; letter-spacing: -.02em; font-variant-numeric: tabular-nums;
+}
+.hero .unit { font-size: 15px; color: var(--ink-2); }
+.sub { font-size: 13px; color: var(--ink-2); margin-top: 5px; }
+.sub b { font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+
+.meter { margin-top: 15px; }
+.meter .track {
+  position: relative; height: 12px; background: var(--surface-2);
+  border: 1px solid var(--line-soft); border-radius: 2px; overflow: hidden;
+}
+.meter .fill { position: absolute; inset: 0 auto 0 0; background: var(--accent); border-radius: 2px 0 0 2px; }
+.meter .over { position: absolute; top: 0; bottom: 0; background: var(--good); }
+.meter .mark { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--ink); }
+.meter .scale {
+  display: flex; justify-content: space-between; margin-top: 6px;
+  font-size: 11px; color: var(--ink-3); font-variant-numeric: tabular-nums;
+}
+.delta-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+.delta {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 7px 12px; border-radius: 3px; font-size: 13.5px; font-weight: 500;
+}
+.delta .amt { font-family: "IBM Plex Mono", monospace; font-weight: 600; font-variant-numeric: tabular-nums; }
+.delta.warn { background: var(--warn-tint); color: var(--warn); }
+.delta.good { background: var(--good-tint); color: var(--good); }
+.delta.flat { background: var(--flat-tint); color: var(--flat); }
+
+.formula { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line-soft); font-size: 12px; color: var(--ink-3); }
+.formula .row { display: flex; justify-content: space-between; gap: 10px; padding: 2px 0; }
+.formula .row span:last-child { font-family: "IBM Plex Mono", monospace; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.formula .hint { margin-top: 7px; line-height: 1.4; }
+
+/* ---- distribuzione ---- */
+.bars { display: flex; flex-direction: column; gap: 9px; }
+.bar-row { display: grid; grid-template-columns: 32px 1fr auto; gap: 10px; align-items: center; }
+.bar-row .chip {
+  font-family: "IBM Plex Mono", monospace; font-size: 11.5px; font-weight: 600;
+  text-align: center; padding: 3px 0; border-radius: 2px;
+  border-left: 3px solid var(--hue);
+  color: color-mix(in srgb, var(--hue) var(--ink-amt), var(--ink-partner));
+}
+.bar-row .chip.solid { color: var(--on-solid); border-left-color: color-mix(in srgb, var(--hue) 62%, var(--ink-partner)); }
+.bar-row .lane { min-width: 0; }
+.bar-row .lane .lbl { font-size: 12px; color: var(--ink-2); margin-bottom: 3px; }
+.bar-row .lane .t { display: block; height: 8px; background: var(--surface-2); border-radius: 0 4px 4px 0; }
+.bar-row .lane .v { display: block; height: 8px; background: var(--accent); border-radius: 0 4px 4px 0; min-width: 3px; transition: width .3s ease; }
+.bar-row .val { text-align: right; font-family: "IBM Plex Mono", monospace; font-size: 12.5px; font-variant-numeric: tabular-nums; color: var(--ink); }
+.bar-row .val small { display: block; font-size: 10.5px; color: var(--ink-3); }
+.bar-row:hover .v { background: var(--accent-2); }
+.excluded { font-size: 11.5px; color: var(--ink-3); margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line-soft); }
+
+/* ---- elenchi ---- */
+.hol-list { list-style: none; margin: 0; padding: 0; font-size: 13px; }
+.hol-list li { display: flex; justify-content: space-between; gap: 10px; padding: 4px 0; border-bottom: 1px solid var(--line-soft); }
+.hol-list li:last-child { border-bottom: 0; }
+.hol-list .d { font-family: "IBM Plex Mono", monospace; color: var(--red-day); font-variant-numeric: tabular-nums; }
+.hol-list .dom { color: var(--ink-3); }
+
+.legend-panel { margin-top: 18px; }
+.legend { display: grid; grid-template-columns: repeat(auto-fit, minmax(186px, 1fr)); gap: 9px 14px; align-items: center; font-size: 12px; }
+.legend div { display: flex; align-items: center; gap: 8px; color: var(--ink-2); min-width: 0; }
+.legend i { width: 22px; height: 14px; border-radius: 2px; flex: none; border-left: 3px solid var(--hue); }
+.legend i.solid { border-left-color: color-mix(in srgb, var(--hue) 62%, var(--ink-partner)); }
+.legend b { font-family: "IBM Plex Mono", monospace; font-size: 11px; color: var(--ink); font-weight: 600; }
+.legend-note { margin: 12px 0 0; font-size: 11.5px; color: var(--ink-3); line-height: 1.45; }
+
+/* ---- tooltip e toast ---- */
+#tip {
+  position: fixed; z-index: 50; pointer-events: none; opacity: 0;
+  transition: opacity .12s; background: var(--ink); color: var(--paper);
+  font-size: 12px; padding: 6px 9px; border-radius: 3px; white-space: nowrap;
+  box-shadow: 0 6px 20px -8px rgba(0,0,0,.5);
+}
+#tip.on { opacity: 1; }
+.toast {
+  position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%) translateY(12px);
+  background: var(--ink); color: var(--paper); padding: 10px 18px; border-radius: 3px;
+  font-size: 13px; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; z-index: 60;
+}
+.toast.on { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 12px; color: var(--ink-3); max-width: 78ch; }
+footer code { font-family: "IBM Plex Mono", monospace; color: var(--ink-2); }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+
+<div class="wrap">
+  <header class="masthead">
+    <div class="brand">
+      <div class="row1">
+        <h1>Eure<span class="k">k</span>a</h1>
+        <p class="tagline">Analisi turni e monte ore per Infermieri</p>
+      </div>
+      <p class="byline">Una app sviluppata da <b>Gianluca Matarrese</b></p>
+    </div>
+    <div class="period">
+      <div>
+        <label class="eyebrow" for="mese">Mese</label>
+        <select class="field" id="mese"></select>
+      </div>
+      <div>
+        <label class="eyebrow" for="anno">Anno</label>
+        <input class="field" id="anno" type="number" min="2000" max="2100" step="1">
+      </div>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <button class="btn ghost" id="demo">Dati di esempio</button>
+    <button class="btn quiet" id="svuota">Svuota mese</button>
+    <span class="spacer"></span>
+    <button class="btn quiet" id="undo" disabled>Annulla<span class="kbd">Ctrl+Z</span></button>
+    <button class="btn quiet" id="redo" disabled>Ripristina<span class="kbd">Ctrl+Y</span></button>
+  </div>
+
+  <div id="stage"></div>
+
+  <footer>
+    Ogni turno vale le ore della tabella
+    (<code>M 7 · P 7 · N 10 · MP 14 · PN 17 · F 6 · MAL 6 · REC −6 · R 0 · S 0</code>); il totale mensile somma
+    tutti i turni <b>esclusi R, S e REC</b>. Le ore previste valgono
+    <code>(giorni del mese − domeniche − festività infrasettimanali) × 6</code>: una festività che cade di
+    domenica viene contata una volta sola. I dati restano nel tuo browser.
+  </footer>
+</div>
+
+<div id="tip" role="status"></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+"use strict";
+
+/* ===============================================================
+   Regole di calcolo
+   =============================================================== */
+const ORE_MAP = { M: 7, P: 7, N: 10, MP: 14, PN: 17, REC: -6, F: 6, S: 0, MAL: 6, "-": 0, R: 0 };
+const NON_CONTEGGIATI = ["R", "S", "REC"];
+const CODES = ["-", "M", "P", "N", "MP", "PN", "REC", "F", "S", "MAL", "R"];
+const NOMI = {
+  "-": "Nessun turno", M: "Mattina", P: "Pomeriggio", N: "Notte", MP: "Mattina + Pomeriggio",
+  PN: "Pomeriggio + Notte", REC: "Recupero", F: "Ferie", S: "Smonto notte", MAL: "Malattia", R: "Riposo"
+};
+/* trattamento grafico: tinta base, eventuale seconda tinta, variante */
+const STILE = {
+  M:   { h: "M" },
+  P:   { h: "P" },
+  N:   { h: "N" },
+  R:   { h: "R" },
+  MAL: { h: "MAL" },
+  REC: { h: "REC" },
+  F:   { h: "F",  mod: "solid" },
+  S:   { h: "R",  mod: "hatch" },
+  MP:  { h: "M",  h2: "P", mod: "dual" },
+  PN:  { h: "P",  h2: "N", mod: "dual" }
+};
+const MESI = ["Gennaio","Febbraio","Marzo","Aprile","Maggio","Giugno","Luglio","Agosto","Settembre","Ottobre","Novembre","Dicembre"];
+const GIORNI = ["Lunedì","Martedì","Mercoledì","Giovedì","Venerdì","Sabato","Domenica"];
+
+function easter(year) {                              // Meeus/Jones/Butcher — gregoriano
+  const a = year % 19, b = Math.floor(year / 100), c = year % 100;
+  const d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25);
+  const g = Math.floor((b - f + 1) / 3), h = (19 * a + b - d - g + 15) % 30;
+  const i = Math.floor(c / 4), k = c % 4, l = (32 + 2 * e + 2 * i - h - k) % 7;
+  const m = Math.floor((a + 11 * h + 22 * l) / 451);
+  const month = Math.floor((h + l - 7 * m + 114) / 31);
+  const day = ((h + l - 7 * m + 114) % 31) + 1;
+  return new Date(year, month - 1, day);
+}
+
+function festivitaItaliane(year) {
+  const hol = [
+    { month: 1, day: 1,  name: "Capodanno" },
+    { month: 1, day: 6,  name: "Epifania" },
+    { month: 4, day: 25, name: "Liberazione" },
+    { month: 5, day: 1,  name: "Lavoro" },
+    { month: 6, day: 2,  name: "Repubblica" },
+    { month: 8, day: 15, name: "Ferragosto" },
+    { month: 11, day: 1, name: "Ognissanti" },
+    { month: 12, day: 8, name: "Immacolata" },
+    { month: 12, day: 25, name: "Natale" },
+    { month: 12, day: 26, name: "S.Stefano" }
+  ];
+  const pasquetta = easter(year);
+  pasquetta.setDate(pasquetta.getDate() + 1);
+  hol.push({ month: pasquetta.getMonth() + 1, day: pasquetta.getDate(), name: "Pasquetta" });
+  return hol;
+}
+
+const giorniNelMese = (y, m1) => new Date(y, m1, 0).getDate();
+
+function domenicheNelMese(y, m1) {
+  let n = 0;
+  for (let d = 1, tot = giorniNelMese(y, m1); d <= tot; d++) {
+    if (new Date(y, m1 - 1, d).getDay() === 0) n++;
+  }
+  return n;
+}
+
+function calcolaMetriche(shifts, monthIndex, year) {
+  const m1 = monthIndex + 1;
+  const days = giorniNelMese(year, m1);
+
+  const festivita = festivitaItaliane(year)
+    .filter(h => h.month === m1)
+    .map(h => Object.assign({}, h, { domenica: new Date(year, monthIndex, h.day).getDay() === 0 }))
+    .sort((a, b) => a.day - b.day);
+  // una festività che cade di domenica è già sottratta come domenica: non va contata due volte
+  const festivitaFeriali = festivita.filter(h => !h.domenica);
+  const domeniche = domenicheNelMese(year, m1);
+
+  const validi = shifts.slice(0, days).filter(s => s !== "-");
+  const conteggi = {}, oreTotali = {};
+  for (const code of Object.keys(ORE_MAP)) {
+    if (code === "-") continue;
+    conteggi[code] = validi.filter(s => s === code).length;
+    oreTotali[code] = conteggi[code] * ORE_MAP[code];
+  }
+
+  const oreMensili = Object.keys(oreTotali)
+    .filter(code => !NON_CONTEGGIATI.includes(code))
+    .reduce((sum, code) => sum + oreTotali[code], 0);
+
+  const targetOre = (days - domeniche - festivitaFeriali.length) * 6;
+  const differenza = oreMensili - targetOre;
+
+  return {
+    days, festivita, festivitaFeriali, domeniche, conteggi, oreTotali, oreMensili, targetOre,
+    oreMancanti: Math.max(-differenza, 0),
+    oreStraordinario: Math.max(differenza, 0)
+  };
+}
+
+/* ===============================================================
+   Stato, cronologia, salvataggio
+   =============================================================== */
+const STORE = "eureka-turni-v2";
+const oggi = new Date();
+const state = {
+  month: oggi.getMonth(),
+  year: oggi.getFullYear(),
+  turni: {}            // "anno-mese" -> array di codici, uno per giorno
+};
+let undoStack = [];    // { key, lista, etichetta }
+let redoStack = [];
+const MAX_STORIA = 60;
+
+const chiave = (y, m) => y + "-" + m;
+
+function salva() {
+  try { localStorage.setItem(STORE, JSON.stringify({ month: state.month, year: state.year, turni: state.turni })); }
+  catch (e) { /* storage non disponibile: si continua in memoria */ }
+}
+function ripristina() {
+  try {
+    const d = JSON.parse(localStorage.getItem(STORE) || "null");
+    if (!d || typeof d !== "object") return;
+    if (Number.isInteger(d.month) && d.month >= 0 && d.month <= 11) state.month = d.month;
+    if (Number.isInteger(d.year) && d.year >= 2000 && d.year <= 2100) state.year = d.year;
+    if (d.turni && typeof d.turni === "object") state.turni = d.turni;
+  } catch (e) { /* dato corrotto: si riparte puliti */ }
+}
+
+function turniCorrenti() {
+  const k = chiave(state.year, state.month);
+  const days = giorniNelMese(state.year, state.month + 1);
+  const base = state.turni[k] || [];
+  const out = base.slice(0, days);
+  while (out.length < days) out.push("-");
+  return out;
+}
+
+/* Ogni modifica salva l'intero mese: così l'annullamento vale sia per la
+   singola casella sia per le azioni che riscrivono tutto il mese. */
+function applica(lista, etichetta) {
+  const k = chiave(state.year, state.month);
+  undoStack.push({ key: k, lista: turniCorrenti(), etichetta: etichetta });
+  if (undoStack.length > MAX_STORIA) undoStack.shift();
+  redoStack = [];
+  state.turni[k] = lista;
+  salva();
+  render();
+}
+
+function annulla() {
+  const passo = undoStack.pop();
+  if (!passo) return;
+  const [y, m] = passo.key.split("-").map(Number);
+  state.year = y; state.month = m;
+  redoStack.push({ key: passo.key, lista: turniCorrenti(), etichetta: passo.etichetta });
+  state.turni[passo.key] = passo.lista;
+  salva();
+  render();
+  toast("Annullato: " + passo.etichetta);
+}
+
+function ripeti() {
+  const passo = redoStack.pop();
+  if (!passo) return;
+  const [y, m] = passo.key.split("-").map(Number);
+  state.year = y; state.month = m;
+  undoStack.push({ key: passo.key, lista: turniCorrenti(), etichetta: passo.etichetta });
+  state.turni[passo.key] = passo.lista;
+  salva();
+  render();
+  toast("Ripristinato: " + passo.etichetta);
+}
+
+/* ===============================================================
+   Rendering
+   =============================================================== */
+const $ = sel => document.querySelector(sel);
+const stage = $("#stage");
+const tip = $("#tip");
+
+const esc = s => String(s).replace(/[&<>"']/g, c =>
+  ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+/* attributi condivisi da caselle, tessere di legenda e chip del grafico */
+function stileTurno(code) {
+  const st = STILE[code];
+  if (!st) return { cls: "", style: "--hue: var(--sh-none)" };
+  const style = "--hue: var(--sh-" + st.h + ")" + (st.h2 ? "; --hue2: var(--sh-" + st.h2 + ")" : "");
+  return { cls: "tinted" + (st.mod ? " " + st.mod : ""), style: style };
+}
+
+function render() {
+  $("#mese").value = String(state.month);
+  $("#anno").value = String(state.year);
+  $("#undo").disabled = undoStack.length === 0;
+  $("#redo").disabled = redoStack.length === 0;
+
+  const turni = turniCorrenti();
+  const m = calcolaMetriche(turni, state.month, state.year);
+  stage.innerHTML =
+    '<div class="layout">' +
+      "<section>" + tabellone(turni, m) + legenda(turni) + "</section>" +
+      '<aside class="rail">' + bilancio(m) + distribuzione(m) + pannelloFestivita(m) + "</aside>" +
+    "</div>";
+  agganciaSelect();
+  agganciaTooltip();
+  agganciaCopia(m);
+}
+
+function tabellone(turni, m) {
+  const primo = new Date(state.year, state.month, 1).getDay();
+  const offset = (primo + 6) % 7;                     // lunedì primo giorno della settimana
+  const holByDay = {};
+  for (const h of m.festivita) holByDay[h.day] = h.name;
+
+  let head = '<div class="grid7 dowrow">';
+  GIORNI.forEach((g, i) => {
+    head += '<div class="dow' + (i === 6 ? " sun" : "") + '">' + g.slice(0, 3) + "</div>";
+  });
+  head += "</div>";
+
+  let cells = '<div class="grid7 days">';
+  for (let i = 0; i < offset; i++) cells += '<div class="cell empty"></div>';
+  for (let d = 1; d <= m.days; d++) {
+    const code = turni[d - 1] || "-";
+    const st = stileTurno(code);
+    const rosso = new Date(state.year, state.month, d).getDay() === 0 || holByDay[d];
+    const opts = CODES.map(c =>
+      '<option value="' + c + '"' + (c === code ? " selected" : "") + ">" + c + "</option>").join("");
+    cells += '<div class="cell ' + st.cls + (rosso ? " red" : "") + '" style="' + st.style + '">' +
+      '<span class="dnum">' + d + "</span>" +
+      (holByDay[d] ? '<span class="holname" title="' + esc(holByDay[d]) + '">' + esc(holByDay[d]) + "</span>" : "") +
+      '<select class="pick" data-day="' + d + '" aria-label="Turno di ' + d + " " + MESI[state.month] +
+        '" title="' + esc(NOMI[code]) + " · " + ORE_MAP[code] + 'h">' + opts + "</select>" +
+      "</div>";
+  }
+  const resto = (offset + m.days) % 7;
+  if (resto) for (let i = resto; i < 7; i++) cells += '<div class="cell empty"></div>';
+  cells += "</div>";
+
+  const domFest = m.festivita.length - m.festivitaFeriali.length;
+  return '<div class="board-head">' +
+      '<h2 class="board-title">' + MESI[state.month] + ' <span class="yr">' + state.year + "</span></h2>" +
+      '<span class="eyebrow">Clicca una casella per impostare il turno</span>' +
+    "</div>" + head + cells +
+    '<p class="hours-note">' + m.days + " giorni · " + m.domeniche + " domeniche · " +
+      m.festivitaFeriali.length + " festività infrasettimanali" +
+      (domFest ? " (" + domFest + " di domenica, già " + (domFest === 1 ? "contata" : "contate") + ")" : "") +
+      " — i giorni in rosso non concorrono alle ore previste.</p>";
+}
+
+function bilancio(m) {
+  const diff = m.oreMensili - m.targetOre;
+  let cls = "flat", testo = "In linea con le ore previste", amt = "0h";
+  if (m.oreMancanti > 0) { cls = "warn"; testo = "Ore mancanti"; amt = "−" + m.oreMancanti + "h"; }
+  else if (m.oreStraordinario > 0) { cls = "good"; testo = "Straordinario"; amt = "+" + m.oreStraordinario + "h"; }
+
+  const scala = Math.max(m.oreMensili, m.targetOre, 1);
+  const pctLav = Math.min(m.oreMensili, m.targetOre) / scala * 100;
+  const pctTarget = m.targetOre / scala * 100;
+  const over = diff > 0 ? diff / scala * 100 : 0;
+  const domFest = m.festivita.length - m.festivitaFeriali.length;
+
+  return '<div class="panel">' +
+    '<span class="eyebrow">Bilancio ore</span>' +
+    '<div class="hero"><span class="big num">' + m.oreMensili + '</span><span class="unit">ore lavorate</span></div>' +
+    '<p class="sub">su <b>' + m.targetOre + "</b> ore previste per " + MESI[state.month].toLowerCase() + "</p>" +
+    '<div class="meter"><div class="track">' +
+      '<div class="fill" style="width:' + pctLav.toFixed(1) + '%"></div>' +
+      (over > 0 ? '<div class="over" style="left:' + pctTarget.toFixed(1) + '%;width:' + over.toFixed(1) + '%"></div>' : "") +
+      '<div class="mark" style="left:calc(' + pctTarget.toFixed(1) + '% - 1px)"></div>' +
+    '</div><div class="scale"><span>0h</span><span>previste ' + m.targetOre + "h</span></div></div>" +
+    '<div class="delta-row"><div class="delta ' + cls + '"><span>' + testo + '</span><span class="amt">' + amt + "</span></div>" +
+      '<button class="btn ghost small" id="copia">Copia riepilogo</button></div>' +
+    '<div class="formula">' +
+      '<div class="row"><span>Giorni del mese</span><span>' + m.days + "</span></div>" +
+      '<div class="row"><span>− Domeniche</span><span>' + m.domeniche + "</span></div>" +
+      '<div class="row"><span>− Festività infrasettimanali</span><span>' + m.festivitaFeriali.length + "</span></div>" +
+      '<div class="row"><span>× 6 ore al giorno</span><span>' + m.targetOre + "h</span></div>" +
+      (domFest ? '<p class="hint">' + domFest + (domFest === 1 ? " festività cade" : " festività cadono") +
+        " di domenica: già sottratta con le domeniche.</p>" : "") +
+    "</div></div>";
+}
+
+function distribuzione(m) {
+  const righe = Object.keys(m.conteggi)
+    .filter(c => m.conteggi[c] > 0)
+    .sort((a, b) => m.conteggi[b] - m.conteggi[a] || a.localeCompare(b));
+
+  if (!righe.length) {
+    return '<div class="panel"><span class="eyebrow">Distribuzione turni</span>' +
+      '<p class="sub">Nessun turno inserito in questo mese.</p></div>';
+  }
+  const max = Math.max.apply(null, righe.map(c => m.conteggi[c]));
+  const totale = righe.reduce((s, c) => s + m.conteggi[c], 0);
+
+  let bars = '<div class="bars">';
+  for (const c of righe) {
+    const n = m.conteggi[c], ore = m.oreTotali[c];
+    const quota = Math.round(n / totale * 100);
+    const escluso = NON_CONTEGGIATI.indexOf(c) >= 0;
+    const st = stileTurno(c);
+    bars += '<div class="bar-row" data-tip="' + esc(NOMI[c]) + " · " + n + " turni · " + ore + "h · " + quota + ' % del mese">' +
+      '<span class="chip ' + st.cls + '" style="' + st.style + '">' + c + "</span>" +
+      '<span class="lane"><span class="lbl">' + esc(NOMI[c]) + "</span>" +
+        '<span class="t"><span class="v" style="width:' + (n / max * 100).toFixed(1) + '%"></span></span></span>' +
+      '<span class="val">' + n + "×<small>" + (escluso ? "—" : ore + "h") + "</small></span>" +
+      "</div>";
+  }
+  bars += "</div>";
+
+  const esclusiPresenti = righe.filter(c => NON_CONTEGGIATI.indexOf(c) >= 0);
+  const nota = esclusiPresenti.length
+    ? '<p class="excluded">' + esclusiPresenti.join(", ") + " non concorrono al totale mensile (segnati con —).</p>"
+    : "";
+  return '<div class="panel"><span class="eyebrow">Distribuzione turni</span>' + bars + nota + "</div>";
+}
+
+function pannelloFestivita(m) {
+  if (!m.festivita.length) return "";
+  return '<div class="panel"><span class="eyebrow">Festività del mese</span><ul class="hol-list">' +
+    m.festivita.map(h => "<li><span>" + esc(h.name) + (h.domenica ? ' <span class="dom">(domenica)</span>' : "") +
+      '</span><span class="d">' + String(h.day).padStart(2, "0") + "/" +
+      String(state.month + 1).padStart(2, "0") + "</span></li>").join("") +
+    "</ul></div>";
+}
+
+function legenda(turni) {
+  const usati = CODES.filter(c => c !== "-" && turni.indexOf(c) >= 0);
+  const mostra = usati.length ? usati : ["M", "P", "N", "S", "R"];
+  const speciali = [];
+  if (mostra.indexOf("S") >= 0) speciali.push("il tratteggio dello smonto richiama il verde del riposo");
+  if (mostra.indexOf("MP") >= 0 || mostra.indexOf("PN") >= 0) speciali.push("i turni accoppiati mostrano le due tinte di cui sono fatti");
+  return '<div class="panel legend-panel"><span class="eyebrow">Legenda</span><div class="legend">' +
+    mostra.map(c => {
+      const st = stileTurno(c);
+      return '<div style="' + st.style + '"><i class="' + st.cls + '"></i><b>' + c + "</b> " + esc(NOMI[c]) + "</div>";
+    }).join("") + "</div>" +
+    (speciali.length ? '<p class="legend-note">' + speciali.join("; ") + ".</p>" : "") +
+    "</div>";
+}
+
+/* ---- riepilogo copiabile ---- */
+function testoRiepilogo(m) {
+  const righe = Object.keys(m.conteggi).filter(c => m.conteggi[c] > 0)
+    .sort((a, b) => m.conteggi[b] - m.conteggi[a] || a.localeCompare(b))
+    .map(c => "  " + c.padEnd(4) + NOMI[c].padEnd(22) + String(m.conteggi[c]).padStart(2) + " turni" +
+      (NON_CONTEGGIATI.indexOf(c) >= 0 ? "" : "  " + m.oreTotali[c] + "h"));
+  const diff = m.oreMensili - m.targetOre;
+  const saldo = diff > 0 ? "straordinario +" + diff + "h" : diff < 0 ? "ore mancanti " + (-diff) + "h" : "in linea";
+  return [
+    "Riepilogo turni — " + MESI[state.month] + " " + state.year,
+    "Ore lavorate: " + m.oreMensili + "h  ·  Ore previste: " + m.targetOre + "h  ·  " + saldo,
+    "Previste = (" + m.days + " giorni − " + m.domeniche + " domeniche − " +
+      m.festivitaFeriali.length + " festività infrasettimanali) × 6",
+    "", "Turni:"
+  ].concat(righe).join("\n");
+}
+
+function agganciaCopia(m) {
+  const btn = document.getElementById("copia");
+  if (!btn) return;
+  btn.addEventListener("click", async () => {
+    const testo = testoRiepilogo(m);
+    try {
+      await navigator.clipboard.writeText(testo);
+      toast("Riepilogo copiato negli appunti.");
+    } catch (e) {
+      const ta = document.createElement("textarea");
+      ta.value = testo; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      const ok = document.execCommand && document.execCommand("copy");
+      ta.remove();
+      toast(ok ? "Riepilogo copiato negli appunti." : "Copia non riuscita: seleziona i dati a mano.");
+    }
+  });
+}
+
+function agganciaSelect() {
+  stage.querySelectorAll("select.pick").forEach(sel => {
+    sel.addEventListener("change", () => {
+      const giorno = Number(sel.dataset.day);
+      const lista = turniCorrenti();
+      lista[giorno - 1] = sel.value;
+      applica(lista, giorno + " " + MESI[state.month].toLowerCase() + " → " + sel.value);
+    });
+  });
+}
+
+function agganciaTooltip() {
+  stage.querySelectorAll("[data-tip]").forEach(el => {
+    el.addEventListener("mouseenter", () => { tip.textContent = el.dataset.tip; tip.classList.add("on"); });
+    el.addEventListener("mousemove", e => {
+      tip.style.left = Math.min(e.clientX + 14, window.innerWidth - tip.offsetWidth - 8) + "px";
+      tip.style.top = (e.clientY - tip.offsetHeight - 10) + "px";
+    });
+    el.addEventListener("mouseleave", () => tip.classList.remove("on"));
+  });
+}
+
+let toastTimer;
+function toast(msg) {
+  const el = $("#toast");
+  el.textContent = msg;
+  el.classList.add("on");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove("on"), 3200);
+}
+
+/* ===============================================================
+   Controlli
+   =============================================================== */
+MESI.forEach((nome, i) => {
+  const o = document.createElement("option");
+  o.value = String(i); o.textContent = nome;
+  $("#mese").appendChild(o);
+});
+$("#mese").addEventListener("change", e => { state.month = Number(e.target.value); salva(); render(); });
+$("#anno").addEventListener("change", e => {
+  const v = Number(e.target.value);
+  if (v >= 2000 && v <= 2100) { state.year = v; salva(); render(); }
+  else e.target.value = String(state.year);
+});
+$("#undo").addEventListener("click", annulla);
+$("#redo").addEventListener("click", ripeti);
+$("#svuota").addEventListener("click", () => {
+  const days = giorniNelMese(state.year, state.month + 1);
+  applica(new Array(days).fill("-"), "svuota " + MESI[state.month].toLowerCase());
+  toast("Mese svuotato.");
+});
+
+document.addEventListener("keydown", e => {
+  if (!(e.ctrlKey || e.metaKey)) return;
+  const t = e.key.toLowerCase();
+  if (t === "z" && !e.shiftKey) { e.preventDefault(); annulla(); }
+  else if (t === "y" || (t === "z" && e.shiftKey)) { e.preventDefault(); ripeti(); }
+});
+
+/* mese dimostrativo: rotazione M · P · N · S · R · R con ferie e un recupero */
+$("#demo").addEventListener("click", () => {
+  const days = giorniNelMese(state.year, state.month + 1);
+  const rot = ["M", "P", "N", "S", "R", "R"];
+  const lista = [];
+  for (let d = 1; d <= days; d++) {
+    let code = rot[(d - 1) % rot.length];
+    if (d >= 12 && d <= 15) code = "F";
+    if (d === 22) code = "REC";
+    lista.push(code);
+  }
+  applica(lista, "dati di esempio");
+  toast("Mese di esempio caricato — prova a cambiare qualche turno.");
+});
+
+ripristina();
+render();
+</script>
